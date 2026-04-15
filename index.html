@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2-Player 2D Arena Shooter</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="game_icon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <!-- UI Overlay -->
+        <div id="ui-layer">
+            <div class="player-ui p1-ui">
+                <h2>Player 1</h2>
+                <div id="p1-score" class="scoreboard"></div>
+                <div class="health-bar"><div id="p1-health" class="health-fill" style="width: 100%;"></div></div>
+                <div class="weapon-info">
+                    <span id="p1-weapon">Pistol</span> | Ammo: <span id="p1-ammo">∞</span>
+                </div>
+            </div>
+            
+            <div class="player-ui p2-ui">
+                <h2>Player 2</h2>
+                <div id="p2-score" class="scoreboard"></div>
+                <div class="health-bar"><div id="p2-health" class="health-fill" style="width: 100%;"></div></div>
+                <div class="weapon-info">
+                    <span id="p2-weapon">Pistol</span> | Ammo: <span id="p2-ammo">∞</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mode Selection Screen -->
+        <div id="mode-screen" class="overlay-screen">
+            <h1 style="color: #f1c40f; text-shadow: 2px 2px 0px #000; margin-bottom: 20px;">Oyun Modu</h1>
+            <div class="map-cards">
+                <div class="map-card mode-card" data-mode="pve">1 Player</div>
+                <div class="map-card mode-card" data-mode="pvp">2 Player</div>
+            </div>
+            <div class="controls-hint">
+                Oyuncu 1: A-D-W (Hareket), F (Ateş), G (Silah) | 🎮 Gamepad 1<br><br>
+                Oyuncu 2/Bot: Yön Tuşları (Hareket), O (Ateş), P (Silah) | 🎮 Gamepad 2<br><br>
+                <span style="color: #2ecc71;">Gamepad: Sol Analog: Hareket, A: Zıpla, X/RT: Ateş, Y/B: Al</span>
+            </div>
+        </div>
+
+        <!-- Rounds Selection Screen -->
+        <div id="rounds-screen" class="hidden overlay-screen">
+            <h1 style="color: #f1c40f; text-shadow: 2px 2px 0px #000; margin-bottom: 20px;">Raund Seçimi</h1>
+            <div class="map-cards">
+                <div class="map-card round-card" data-rounds="1">1 Raund<br><span style="font-size:8px; color:#aaa;">(Tek Atış)</span></div>
+                <div class="map-card round-card" data-rounds="3">3 Raund<br><span style="font-size:8px; color:#aaa;">(En İyi 3)</span></div>
+                <div class="map-card round-card" data-rounds="5">5 Raund<br><span style="font-size:8px; color:#aaa;">(En İyi 5)</span></div>
+            </div>
+        </div>
+
+        <!-- Start Screen (Map Selection) -->
+        <div id="start-screen" class="hidden overlay-screen">
+            <h1 style="color: #f1c40f; text-shadow: 2px 2px 0px #000; margin-bottom: 20px;">Arena Seçimi</h1>
+            <div class="map-cards" style="flex-wrap: wrap; justify-content: center; gap: 20px;">
+                <div class="map-card" data-map="0">
+                    <svg viewBox="0 0 100 70" class="minimap">
+                        <rect x="0" y="66" width="100" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="10" y="55" width="30" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="60" y="55" width="30" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="30" y="45" width="40" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="15" y="35" width="20" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="65" y="35" width="20" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="40" y="25" width="20" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="45" y="15" width="10" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                    </svg>
+                    Klasik Arena
+                </div>
+                <div class="map-card" data-map="1">
+                    <svg viewBox="0 0 100 70" class="minimap">
+                        <rect x="0" y="58" width="35" height="12" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="65" y="58" width="35" height="12" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="0" y="48" width="20" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="80" y="48" width="20" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="22" y="35" width="14" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="64" y="35" width="14" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="36" y="26" width="28" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                    </svg>
+                    Tehlikeli Çukur
+                </div>
+                <div class="map-card" data-map="2">
+                    <svg viewBox="0 0 100 70" class="minimap">
+                        <rect x="0" y="66" width="100" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="0" y="55" width="40" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="60" y="55" width="40" height="4" fill="#2f3640" stroke="#718093" stroke-width="1"/>
+                        <rect x="0" y="50" width="2" height="10" fill="#2f3640" />
+                        <rect x="98" y="50" width="2" height="10" fill="#2f3640" />
+                        <rect x="10" y="45" width="20" height="4" fill="#2f3640" />
+                        <rect x="40" y="45" width="20" height="4" fill="#2f3640" />
+                        <rect x="70" y="45" width="20" height="4" fill="#2f3640" />
+                        <rect x="0" y="35" width="15" height="4" fill="#2f3640" />
+                        <rect x="25" y="35" width="20" height="4" fill="#2f3640" />
+                        <rect x="55" y="35" width="20" height="4" fill="#2f3640" />
+                        <rect x="85" y="35" width="15" height="4" fill="#2f3640" />
+                        <rect x="10" y="25" width="20" height="4" fill="#2f3640" />
+                        <rect x="40" y="25" width="20" height="4" fill="#2f3640" />
+                        <rect x="70" y="25" width="20" height="4" fill="#2f3640" />
+                    </svg>
+                    Kafes Labirent
+                </div>
+                <div class="map-card" data-map="3">
+                    <div class="minimap" style="display: flex; justify-content: center; align-items: center;">
+                        <span style="font-size: 40px; color: #f1c40f;">?</span>
+                    </div>
+                    Rastgele Harita
+                </div>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas" width="1000" height="700"></canvas>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="hidden overlay-screen">
+            <h1 id="winner-text" style="color: #f1c40f; text-shadow: 2px 2px 0px #000; margin-bottom: 30px;">Player X Wins!</h1>
+            <div style="display: flex; gap: 20px;">
+                <button id="restart-btn" class="game-btn btn-red">Tekrar Oyna</button>
+                <button id="menu-btn" class="game-btn btn-blue">Menüye Dön</button>
+            </div>
+        </div>
+
+        <!-- Pause Screen -->
+        <div id="pause-screen" class="hidden overlay-screen">
+            <h1 style="color: #f1c40f; text-shadow: 2px 2px 0px #000; margin-bottom: 30px;">OYUN DURAKLATILDI</h1>
+            <div style="display: flex; gap: 20px;">
+                <button id="resume-btn" class="game-btn btn-green">Devam Et</button>
+                <button id="pause-restart-btn" class="game-btn btn-red">Tekrar Oyna</button>
+                <button id="pause-menu-btn" class="game-btn btn-blue">Menüye Dön</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="game.js?v=6"></script>
+</body>
+</html>
