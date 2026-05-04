@@ -54,4 +54,4 @@ Bu projeyi yerel bilgisayarınızda çalıştırmak için:
 -   **Ses:** Web Audio API (Prosedürel ses üretimi)
 
 ---
-Geliştiren: [Senin Adın/Kullanıcı Adın]
+Geliştiren: Muhammed Furkan Karaşın
